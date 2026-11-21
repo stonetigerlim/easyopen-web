@@ -1,0 +1,18 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>dxf-viewer 수정 내용</title>
+<style>body{font-family:system-ui,sans-serif;margin:0 auto;padding:16px;max-width:760px;line-height:1.6}pre{background:#f3f3f3;padding:10px;overflow:auto;font-size:13px}@media(prefers-color-scheme:dark){body{background:#121316;color:#e3e2e6}pre{background:#222}a{color:#a8c7fa}}</style></head><body>
+<h1>dxf-viewer 수정 내용 (MPL-2.0)</h1>
+<p>Easy Open은 <a href="https://github.com/vagran/dxf-viewer">dxf-viewer</a>(Mozilla Public License 2.0)를 three.js와 함께 하나의 파일로 묶어 사용합니다. 묶은 파일: <a href="../dxf/dxf-viewer.bundle.js">dxf/dxf-viewer.bundle.js</a></p>
+<h2>묶는 방법</h2>
+<pre>// entry.js
+import { DxfViewer } from 'dxf-viewer';
+import * as THREE from 'three';
+window.DxfViewer = DxfViewer;
+window.THREE = THREE;
+
+npx esbuild entry.js --bundle --minify --outfile=dxf-viewer.bundle.js</pre>
+<h2>원본에서 바꾼 곳 (1곳)</h2>
+<p>파일: <code>src/DxfScene.js</code>, 도형 색을 정하는 함수(<code>_GetEntityColor</code>). 색이 BYLAYER(색 번호 256)로 적힌 도형이 레이어 "0"에 있으면, 자기 레이어 색을 바로 쓰지 않고 원본의 BYLAYER 지연 처리(블록 안에서는 블록을 넣은 레이어의 색을 따름)에 맡기도록 조건을 하나 더했습니다.</p>
+<pre>- else if (entity.colorIndex === 256) { if (entity.hasOwnProperty("layer")) { ...
++ else if (entity.colorIndex === 256) { if (entity.hasOwnProperty("layer") &amp;&amp; entity.layer !== "0") { ...</pre>
+<p>이 수정 부분도 Mozilla Public License 2.0으로 제공합니다. 라이선스 전문: <a href="https://www.mozilla.org/MPL/2.0/">https://www.mozilla.org/MPL/2.0/</a></p>
+</body></html>
